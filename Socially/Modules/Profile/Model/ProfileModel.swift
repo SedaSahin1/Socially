@@ -13,10 +13,10 @@ struct BlogPost: Decodable {
     let image: String
     let follower: String
     let follows: String
-    let posts: [Posts]
+    let posts: [UserPosts]
 }
 
-struct Posts: Decodable {
+struct UserPosts: Decodable {
     let userName: String
     let image: String
 }

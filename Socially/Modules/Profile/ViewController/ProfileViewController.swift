@@ -16,50 +16,72 @@ class ProfileViewController: UIViewController {
     @IBOutlet weak var postCount: UILabel!
     @IBOutlet weak var followerCount: UILabel!
     @IBOutlet weak var followsCount: UILabel!
-    internal var tabs: [Tab] = []
-    @IBOutlet weak var tabbedView: TabbedPageView!
+    @IBOutlet weak var profileCollectionView: UICollectionView!
+    var userInformation: BlogPost?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         let jsonData = USER.data(using: .utf8)!
         let blogPost: BlogPost = try! JSONDecoder().decode(BlogPost.self, from: jsonData)
-
+        userInformation = blogPost
         postCount.text = "\(blogPost.posts.count)"
         followsCount.text = blogPost.follows
         followerCount.text = blogPost.follower
         nameSurname.text = blogPost.nameSurname
         userName.text = "@\(blogPost.userName)"
         profileImage.image = UIImage(named: blogPost.image)
-        reload()
+        
+        profileCollectionView.delegate = self
+        profileCollectionView.dataSource = self
+        profileCollectionView.register(UINib(nibName: "ProfileItemView", bundle:nil), forCellWithReuseIdentifier: "ProfileItemView")
+        
+        let layout = UICollectionViewCompositionalLayout { sectionIndex, enviroment in
+            
+            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5)
+                                                  , heightDimension: .fractionalHeight(1))
+                   let item = NSCollectionLayoutItem(layoutSize: itemSize)
+                   
+            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1)
+                                                          , heightDimension: .absolute(200))
+                   let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize
+                   , subitems: [item])
+                   group.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 0
+                   , bottom: 0, trailing: 0)
+                   
+                   let section = NSCollectionLayoutSection(group: group)
+                   section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10
+                   , bottom: 10, trailing: 10)
+                   
+                   return section
+        }
+        
+        profileCollectionView.setCollectionViewLayout(layout, animated: true)
+       
+    }
+   
+}
+
+extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
     }
     
-    func reload(){
+   
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        let controller1 = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ProfilePostViewController") as! ProfilePostViewController
-        let controller2 = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ProfilePostViewController") as! ProfilePostViewController
-        
-        tabs = [
-            Tab(contentSource: .viewController(controller1), type: .icon(UIImage(named: "icon_photos"))),
-            Tab(contentSource: .viewController(controller2), type: .icon(UIImage(named: "icon_saved")))
-        ]
-        
-        tabbedView.tabBar.position = .top
-        tabbedView.tabBar.sliderColor = UIColor(red: 0.00, green: 0.59, blue: 0.77, alpha: 1.00)
-        tabbedView.tabBar.transitionStyle = .sticky
-        tabbedView.tabBar.tabWidth = 130
-        tabbedView.delegate = self
-        tabbedView.dataSource = self
-        tabbedView.reloadData()
+        return userInformation?.posts.count ?? 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+     
+        let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier:"ProfileItemView",
+                        for: indexPath
+                    ) as! ProfileItemView
+        cell.image.image = UIImage(named: userInformation?.posts[indexPath.row].image ?? "")
+        return cell
     }
 }
 
-extension ProfileViewController: TabbedPageViewDelegate, TabbedPageViewDataSource {
-    func tabbedPageView(_ tabbedPageView: TabbedPageView, tabForIndex index: Int) -> Tab {
-        return tabs[index]
-    }
-    
-    func numberOfTabs(in tabbedPageView: TabbedPageView) -> Int {
-        return tabs.count
-    } 
-}

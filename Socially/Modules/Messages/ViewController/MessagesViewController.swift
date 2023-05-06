@@ -70,4 +70,11 @@ extension MessagesViewController: UICollectionViewDelegate, UICollectionViewData
     
         return cell
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil);
+        let vc = storyboard.instantiateViewController(withIdentifier: "MessagesDetailPageViewController")
+    
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
 }

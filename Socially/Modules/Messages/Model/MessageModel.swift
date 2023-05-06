@@ -8,6 +8,12 @@
 import Foundation
 import UIKit
 
-struct MessageModel: Decodable {
-    
+struct Messages: Decodable {
+    let messages: [Message]
+}
+
+struct Message: Decodable {
+    let name: String
+    let image: String
+    let message: String
 }

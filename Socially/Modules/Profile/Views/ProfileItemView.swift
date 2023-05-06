@@ -6,3 +6,13 @@
 //
 
 import Foundation
+import UIKit
+
+class ProfileItemView: UICollectionViewCell {
+    
+    @IBOutlet weak var image: UIImageView!{
+        didSet{
+            image.layer.cornerRadius = 8
+        }
+    }
+}

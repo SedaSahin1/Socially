@@ -6,3 +6,9 @@
 //
 
 import Foundation
+import UIKit
+
+class HomeStoryCell: UICollectionViewCell {
+    
+    @IBOutlet weak var storyIcon: UIImageView!
+}

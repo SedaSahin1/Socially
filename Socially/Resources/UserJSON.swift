@@ -13,15 +13,15 @@ let USER = """
     "follower": "1.300",
     "follows": "1.234",
     "posts": [{
-    "image": "example",
+    "image": "home_example_photo_1",
     "userName": "sedasahin"
 },
 {
-    "image": "example",
+    "image": "home_example_photo",
     "userName": "sedasahin"
 },
 {
-    "image": "example",
+    "image": "home_example_photo",
     "userName": "sedasahin"
 }]
 }
